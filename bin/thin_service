@@ -2,8 +2,13 @@
 
 
 if ARGV.first == "start"
+  warning_level = $VERBOSE
+  $VERBOSE = nil
+  
   ARGV.shift
   ARGV = ["exec", "thin", "start"] + ARGV
+  
+  $VERBOSE = warning_level
   
   Dir.chdir( ARGV[ARGV.index("-c")+1] )
   
@@ -14,10 +19,15 @@ if ARGV.first == "start"
   gem 'bundler', version
   load Gem.bin_path('bundler', 'bundle', version)
 elsif ARGV.first == "daemon"
+  warning_level = $VERBOSE
+  $VERBOSE = nil
+  
   ARGV.shift
   ARGV.shift
   Dir.chdir( ARGV.shift )
   ARGV = ["exec"] + ARGV
+  
+  $VERBOSE = warning_level
  
   # use same ruby for bundle exec, in case global path is different
   ENV["Path"] = RbConfig::CONFIG['bindir'] + ';' + ENV["Path"]
